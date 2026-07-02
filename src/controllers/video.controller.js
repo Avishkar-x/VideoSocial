@@ -5,7 +5,8 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
-
+import { Like } from "../models/like.model.js";
+import { Comment } from "../models/comment.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
     const page = Number(req.query.page) || 1
@@ -257,7 +258,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     }
 
     const {title,description} = req.body
-    const localThumbnailPath = req.file?.thumbnail?.[0]?.path
+    const localThumbnailPath = req.file?.path
     if(!title && !description && !localThumbnailPath)
     {
         throw new ApiError(400,"update fields missing")
@@ -308,6 +309,14 @@ const deleteVideo = asyncHandler(async (req, res) => {
     {
         throw new ApiError(403, "Video can only be deleted by owner")
     }
+    await User.updateMany(
+        {},
+        {
+            $pull: {
+                watchHistory: video._id
+            }
+        }
+    );
     await Like.deleteMany({
         video: videoId
     });
