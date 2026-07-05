@@ -3,7 +3,7 @@ import {Playlist} from "../models/playlist.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
-
+import { Video } from "../models/video.model.js"
 
 const createPlaylist = asyncHandler(async (req, res) => {
     const {name, description} = req.body
@@ -28,16 +28,53 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
     if(!isValidObjectId(userId))
         throw new ApiError(400,"Invalid user id")
 
-    const playlist = await Playlist.find({
-        owner:userId
-    }).sort({
-        createdAt:-1
-    })
+    const playlists = await Playlist.aggregate([
+        {
+            $match: {
+                owner: req.user._id
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "videos",
+                foreignField: "_id",
+                as: "videos"
+            }
+        },
+        {
+            $addFields: {
+                totalVideos: {
+                    $size: "$videos"
+                },
+                thumbnail: {
+                    $ifNull: [
+                        { $first: "$videos.thumbnail" },
+                        null
+                    ]
+                }
+            }
+        },
+        {
+            $project: {
+                name: 1,
+                description: 1,
+                totalVideos: 1,
+                thumbnail: 1,
+                createdAt: 1
+            }
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        }
+    ])
 
     return res
     .status(200)
     .json(
-        new ApiResponse(200, playlist, "Playlists fetched successfully")
+        new ApiResponse(200, playlists, "Playlists fetched successfully")
     )
 })
 
@@ -68,6 +105,8 @@ const getPlaylistById = asyncHandler(async (req, res) => {
     .json(
         new ApiResponse(200, playlist, "playlist fetched successfully")
     )
+
+    // Since playlist doesnt have public or pvt status we assume its public by default.
 })
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
@@ -80,10 +119,11 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
     if(!playlist)
         throw new ApiError(404, "playlist not found")
-    const video = await Video.findById(videoId)
-
+    
     if(!req.user._id.equals(playlist.owner))
         throw new ApiError(403,"Only user can update playlist")
+
+    const video = await Video.findById(videoId)
 
     if(!video)
         throw new ApiError(404, "Video not found")
