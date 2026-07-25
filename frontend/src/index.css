@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-bg-primary: #0f0f0f;
+  --color-bg-surface: #1a1a1a;
+  --color-bg-surface-hover: #272727;
+  --color-border-default: #2a2a2a;
+  --color-text-primary: #f1f1f1;
+  --color-text-secondary: #aaaaaa;
+  --color-accent: #6d5eff;
+  --color-accent-hover: #5a4bdb;
+  --color-destructive: #ef4444;
+  --color-success: #22c55e;
+
+  /* Light mode overrides handled via .light class */
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-default: 0.5rem;
+
+  /* Sidebar widths */
+  --sidebar-expanded: 240px;
+  --sidebar-collapsed: 64px;
+}
+
+/* Light mode theme */
+.light {
+  --color-bg-primary: #ffffff;
+  --color-bg-surface: #f5f5f5;
+  --color-bg-surface-hover: #e8e8e8;
+  --color-border-default: #e0e0e0;
+  --color-text-primary: #0f0f0f;
+  --color-text-secondary: #606060;
+  --color-destructive: #dc2626;
+  --color-success: #16a34a;
+}
+
+/* Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Transitions */
+.transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
