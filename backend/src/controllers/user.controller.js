@@ -134,15 +134,23 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
-    const options = {
+    // maxAge values mirror ACCESS_TOKEN_EXPIRY=1d and REFRESH_TOKEN_EXPIRY=10d
+    const accessTokenOptions = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        maxAge: 1 * 24 * 60 * 60 * 1000        // 1 day in ms
+    }
+
+    const refreshTokenOptions = {
+        httpOnly: true,
+        secure: true,
+        maxAge: 10 * 24 * 60 * 60 * 1000       // 10 days in ms
     }
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, accessTokenOptions)
+        .cookie("refreshToken", refreshToken, refreshTokenOptions)
         .json(
             new ApiResponse(
                 200,
@@ -204,17 +212,25 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
         }
 
-        const options = {
+        // maxAge values mirror ACCESS_TOKEN_EXPIRY=1d and REFRESH_TOKEN_EXPIRY=10d
+        const accessTokenOptions = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            maxAge: 1 * 24 * 60 * 60 * 1000    // 1 day in ms
+        }
+
+        const refreshTokenOptions = {
+            httpOnly: true,
+            secure: true,
+            maxAge: 10 * 24 * 60 * 60 * 1000   // 10 days in ms
         }
 
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
         return res
             .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options)
+            .cookie("accessToken", accessToken, accessTokenOptions)
+            .cookie("refreshToken", refreshToken, refreshTokenOptions)
             .json(
                 new ApiResponse(
                     200,
