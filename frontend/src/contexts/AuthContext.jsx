@@ -1,110 +1,78 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { login as apiLogin, logout as apiLogout, refreshToken, getCurrentUser } from '../api/auth.api'
-import { tokenStore } from '../api/tokenStore'
-import queryClient from '../lib/queryClient'
-import toast from 'react-hot-toast'
+import { createContext, useContext, useState, useEffect } from "react"
+import { login as apiLogin , logout as apiLogout, getCurrentUser, refreshToken} from "../api/auth.api"
+import { removeAccessToken, setAccessToken } from "../api/tokenStore"
+export const AuthContext = createContext(null)
 
-// ─── Context ─────────────────────────────────────────────────────────────────
+export const AuthContextProvider = ({ children }) => {
+    const [user, setUser] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
 
-const AuthContext = createContext(null)
-
-// ─── Provider ────────────────────────────────────────────────────────────────
-
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const initialized = useRef(false)
-
-  // ── Silent refresh on app mount ──────────────────────────────────────────
-  // Attempts to exchange the refresh token cookie for a new access token.
-  // Over HTTPS: cookies are sent automatically → succeeds.
-  // Over HTTP (local dev): no cookie is present → fails → user must re-login.
-
-  const initializeAuth = useCallback(async () => {
-    try {
-      // refreshToken endpoint returns axios response; payload is response.data.data = { accessToken, refreshToken }
-      const res = await refreshToken()
-      const newToken = res?.data?.data?.accessToken
-      if (newToken) {
-        tokenStore.set(newToken)
-      }
-      // getCurrentUser returns axios response; payload is response.data.data = user object
-      const userRes = await getCurrentUser()
-      setUser(userRes?.data?.data ?? null)
-    } catch {
-      // Expected in local dev (no cookies) or when no session exists.
-      tokenStore.clear()
-      setUser(null)
-    } finally {
-      setIsLoading(false)
+    useEffect(() => {
+    const initializeAuth = async () => {
+        try {
+            const res = await refreshToken()
+            const newAccessToken = res?.data?.accessToken
+            if(newAccessToken){
+                setAccessToken(newAccessToken)
+                const currUser = await getCurrentUser()
+                setUser(currUser.data)
+            }
+        } catch (error) {
+            removeAccessToken()
+        } finally {
+            setIsLoading(false)
+        }
     }
-  }, [])
 
-  useEffect(() => {
-    if (initialized.current) return
-    initialized.current = true
     initializeAuth()
-  }, [initializeAuth])
+    }, [])
+    const login = async (credentials) =>{
+        const res = await apiLogin(credentials)
 
-  // ── Listen for forced logout from axios interceptor ──────────────────────
-  useEffect(() => {
-    function handleForcedLogout() {
-      tokenStore.clear()
-      setUser(null)
-      queryClient.clear()
-      toast.error('Your session has expired. Please log in again.')
+        const data = res.data
+
+        if(data?.accessToken)
+        {
+            setAccessToken(data.accessToken)
+        }
+        setUser(data.user?? null)
+
+        return data
     }
-
-    window.addEventListener('auth:logout', handleForcedLogout)
-    return () => window.removeEventListener('auth:logout', handleForcedLogout)
-  }, [])
-
-  // ── Login ────────────────────────────────────────────────────────────────
-
-  const login = useCallback(async (credentials) => {
-    const res = await apiLogin(credentials)
-    // res is full axios response; payload is res.data.data = { user, accessToken, refreshToken }
-    const data = res?.data?.data
-    if (data?.accessToken) {
-      tokenStore.set(data.accessToken)
+    const logout = async()=>{
+        try {
+            await apiLogout()
+    
+            
+        } catch (error) {
+            
+        }
+        finally{
+            removeAccessToken()
+            setUser(null)
+        }
     }
-    setUser(data?.user ?? null)
-    return data
-  }, [])
-
-  // ── Logout ───────────────────────────────────────────────────────────────
-
-  const logout = useCallback(async () => {
-    try {
-      await apiLogout()
-    } catch {
-      // If the logout request fails, still clear local state
-    } finally {
-      tokenStore.clear()
-      setUser(null)
-      queryClient.clear()
+    const updateUser = (updatedUser) => {
+    setUser((prev) => ({
+        ...prev,
+        ...updatedUser
+    }))
+}
+    const value = {
+        user,
+        isAuthenticated: user !== null,
+        isLoading,
+        login,
+        logout,
+        updateUser
     }
-  }, [])
-
-  // ── Update user state (used after profile edits) ─────────────────────────
-
-  const updateUser = useCallback((updatedUser) => {
-    setUser((prev) => (prev ? { ...prev, ...updatedUser } : updatedUser))
-  }, [])
-
-  const value = {
-    user,
-    isAuthenticated: user !== null,
-    isLoading,
-    login,
-    logout,
-    updateUser,
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useAuth() {
   const context = useContext(AuthContext)

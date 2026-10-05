@@ -1,26 +1,20 @@
-import axiosInstance from './axiosInstance'
+import axiosInstance from "./axiosInstance"
 
-/**
- * Toggle subscription to a channel.
- * Returns { subscribed: boolean }
- * @param {string} channelId
- */
-export function toggleSubscription(channelId) {
-  return axiosInstance.post(`/subscriptions/c/${channelId}`)
+// POST /api/v1/subscriptions/c/:channelId  → { data: { subscribed: boolean } }
+export const toggleSubscription = async (channelId) => {
+    const response = await axiosInstance.post(`/subscriptions/c/${channelId}`)
+    return response.data
 }
 
-/**
- * Get channels that a user is subscribed to.
- * @param {string} subscriberId - must be the current user's _id
- */
-export function getSubscribedChannels(subscriberId) {
-  return axiosInstance.get(`/subscriptions/u/${subscriberId}`)
+// GET /api/v1/subscriptions/u/:subscriberId  → { data: [ { _id, channel: {...}, createdAt } ] }
+export const getSubscribedChannels = async (subscriberId) => {
+    const response = await axiosInstance.get(`/subscriptions/u/${subscriberId}`)
+    return response.data
 }
 
-/**
- * Get subscribers of a channel (owner only).
- * @param {string} channelId
- */
-export function getChannelSubscribers(channelId) {
-  return axiosInstance.get(`/subscriptions/c/${channelId}`)
+// GET /api/v1/subscriptions/c/:channelId  → { data: [ { _id, subscriber: {...}, createdAt } ] }
+export const getUserChannelSubscribers = async (channelId) => {
+    const response = await axiosInstance.get(`/subscriptions/c/${channelId}`)
+    return response.data
 }
+

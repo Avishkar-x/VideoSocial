@@ -1,50 +1,37 @@
-import axiosInstance from './axiosInstance'
+import axiosInstance from "./axiosInstance"
 
-/**
- * Get a channel's public profile by username.
- * Returns: { _id, fullName, username, avatar, coverImage, email,
- *            subscribersCount, channelsSubscribedToCount, isSubscribed }
- * @param {string} username
- */
-export function getChannelProfile(username) {
-  return axiosInstance.get(`/users/c/${username}`)
+// GET /api/v1/users/c/:username  → channel profile with sub counts
+export const getChannelProfile = async (username) => {
+    const response = await axiosInstance.get(`/users/c/${username}`)
+    return response.data
 }
 
-/**
- * Get the current user's watch history (array of videos with owner).
- */
-export function getWatchHistory() {
-  return axiosInstance.get('/users/history')
+// GET /api/v1/users/history
+export const getWatchHistory = async () => {
+    const response = await axiosInstance.get("/users/history")
+    return response.data
 }
 
-/**
- * Update the current user's account details.
- * @param {{ fullName: string, email: string }} data
- */
-export function updateAccount(data) {
-  return axiosInstance.patch('/users/update-account', data)
+// PATCH /api/v1/users/update-account  body: { fullName, email }
+export const updateAccountDetails = async (fullName, email) => {
+    const response = await axiosInstance.patch("/users/update-account", { fullName, email })
+    return response.data
 }
 
-/**
- * Change the current user's password.
- * @param {{ oldPassword: string, newPassword: string }} data
- */
-export function changePassword(data) {
-  return axiosInstance.post('/users/change-password', data)
+// POST /api/v1/users/change-password  body: { oldPassword, newPassword }
+export const changePassword = async (oldPassword, newPassword) => {
+    const response = await axiosInstance.post("/users/change-password", { oldPassword, newPassword })
+    return response.data
 }
 
-/**
- * Update the current user's avatar.
- * @param {FormData} formData - must contain 'avatar' field
- */
-export function updateAvatar(formData) {
-  return axiosInstance.patch('/users/avatar', formData)
+// PATCH /api/v1/users/avatar  multipart/form-data, field: avatar
+export const updateAvatar = async (formData) => {
+    const response = await axiosInstance.patch("/users/avatar", formData)
+    return response.data
 }
 
-/**
- * Update the current user's cover image.
- * @param {FormData} formData - must contain 'coverImage' field
- */
-export function updateCoverImage(formData) {
-  return axiosInstance.patch('/users/cover-image', formData)
+// PATCH /api/v1/users/cover-image  multipart/form-data, field: coverImage
+export const updateCoverImage = async (formData) => {
+    const response = await axiosInstance.patch("/users/cover-image", formData)
+    return response.data
 }

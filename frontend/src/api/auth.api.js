@@ -1,42 +1,32 @@
-import axiosInstance from './axiosInstance'
+import axiosInstance from "./axiosInstance"
 
-/**
- * Register a new user.
- * @param {FormData} formData - Must include: fullName, email, username, password, avatar, coverImage?
- */
-export function register(formData) {
-  return axiosInstance.post('/users/register', formData)
+export const login = async (data) =>{
+    const response = await axiosInstance.post('/users/login', data)
+
+    return response.data
 }
 
-/**
- * Login with email/username and password.
- * @param {{ email?: string, username?: string, password: string }} credentials
- * @returns {Promise<{ user, accessToken, refreshToken }>}
- */
-export function login(credentials) {
-  return axiosInstance.post('/users/login', credentials)
+// form data is manually handled by axios
+export const register = async (formData) =>{
+    const response = await axiosInstance.post('/users/register', formData)
+
+    return response.data
 }
 
-/**
- * Logout the current user. Clears cookies server-side.
- */
-export function logout() {
-  return axiosInstance.post('/users/logout')
+export const logout = async () =>{
+    const response = await axiosInstance.post('/users/logout')
+
+    return response.data
 }
 
-/**
- * Silently refresh the access token using the httpOnly refresh token cookie.
- * Over HTTP (local dev) this will fail — expected behaviour.
- * @returns {Promise<{ accessToken, refreshToken }>}
- */
-export function refreshToken() {
-  return axiosInstance.post('/users/refresh-token')
+export const getCurrentUser = async () => {
+    const response = await axiosInstance.get('/users/current-user')
+
+    return response.data
 }
 
-/**
- * Fetch the current authenticated user's profile.
- * @returns {Promise<User>}
- */
-export function getCurrentUser() {
-  return axiosInstance.get('/users/current-user')
-}
+export const refreshToken = async () => {
+  const response = await axiosInstance.post("/users/refresh-token");
+
+  return response.data;
+};

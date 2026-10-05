@@ -1,18 +1,13 @@
-import axiosInstance from './axiosInstance'
+import axiosInstance from "./axiosInstance"
 
-/**
- * Get aggregated stats for the current user's channel.
- * Returns: { totalVideos, publishedVideos, unpublishedVideos, totalViews, totalLikes,
- *            totalComments, averageViews, totalSubscribers }
- */
-export function getChannelStats() {
-  return axiosInstance.get('/dashboard/stats')
+// GET /api/v1/dashboard/stats  → channel stats for current user
+export const getChannelStats = async () => {
+    const response = await axiosInstance.get("/dashboard/stats")
+    return response.data
 }
 
-/**
- * Get all videos uploaded by the current user (for the dashboard table).
- * Returns an array of videos without description/owner.
- */
-export function getChannelVideos() {
-  return axiosInstance.get('/dashboard/videos')
+// GET /api/v1/dashboard/videos  → all videos owned by current user
+export const getChannelVideos = async () => {
+    const response = await axiosInstance.get("/dashboard/videos")
+    return response.data
 }

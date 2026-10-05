@@ -1,45 +1,68 @@
 # 🎥 VideoSocial
 
-A full-stack video sharing platform inspired by YouTube, built using the MERN stack. The application supports secure authentication, video uploads, social interactions, playlist management, and creator dashboards with a scalable REST API architecture.
+A full-stack video sharing platform inspired by YouTube, built using the MERN stack.
+
+VideoSocial allows users to upload, watch, search, and interact with videos through features such as likes, comments, subscriptions, playlists, watch history, and channel profiles. Creators can manage their videos through a dedicated dashboard.
 
 ---
 
 ## 🚀 Features
 
-### Authentication
-- JWT-based Authentication (Access + Refresh Tokens)
-- Secure HTTP-only Cookie Authentication
-- User Registration & Login
-- Persistent Sessions
-- Change Password
-- Update Profile, Avatar & Cover Image
+### 🔐 Authentication
+- JWT-based authentication with Access + Refresh Tokens
+- HTTP-only cookie-based session management
+- User registration and login
+- Login using username or email
+- Persistent sessions
+- Automatic access-token refresh
+- Protected routes
+- Change password
+- Update profile information
+- Avatar and cover image management
+- Logout
 
-### Video Management
-- Upload Videos with Thumbnail
-- Edit & Delete Videos
-- Publish / Unpublish Videos
-- Watch Videos
-- Search Videos
-- Paginated Video Feed
-- Watch History
+### 🎬 Video Management
+- Upload videos with thumbnails
+- Video playback
+- Edit videos
+- Delete videos
+- Publish / Unpublish videos
+- Paginated video feed
+- Video search by title and description
+- Watch history
+- View tracking
 
-### Social Features
-- Comments
-- Like / Unlike Videos
-- Like / Unlike Comments
-- Channel Subscriptions
-- Tweets (Community Posts)
-- Liked Videos
+### 💬 Social Features
+- Add, edit, and delete comments
+- Like / Unlike videos
+- Subscribe / Unsubscribe to channels
+- View liked videos
+- View subscribed channels
+- View channel subscribers
+- Channel profiles
 
-### Playlist
-- Create, Edit & Delete Playlists
-- Add / Remove Videos
-- Save Videos directly from Watch Page
+### 📚 Playlists
+- Create playlists
+- Edit playlists
+- Delete playlists
+- Add videos to playlists
+- Remove videos from playlists
+- Save videos to playlists directly from the video card/watch page
+- View playlist details
 
-### Creator Dashboard
-- Channel Statistics
-- Video Management
-- Analytics using MongoDB Aggregation Pipelines
+### 📊 Creator Dashboard
+- Channel statistics
+- View uploaded videos
+- Edit videos
+- Publish / Unpublish videos
+- Delete videos
+- Manage creator content
+
+### ⚙️ Account Management
+- Update account information
+- Change password
+- Update avatar
+- Update cover image
 
 ---
 
@@ -50,7 +73,7 @@ A full-stack video sharing platform inspired by YouTube, built using the MERN st
 - Express.js
 - MongoDB
 - Mongoose
-- JWT Authentication
+- JWT
 - Multer
 - Cloudinary
 
@@ -58,9 +81,8 @@ A full-stack video sharing platform inspired by YouTube, built using the MERN st
 - React 19
 - Vite
 - React Router DOM
-- TanStack Query
 - Axios
-- Tailwind CSS v4
+- Tailwind CSS
 - React Hook Form
 - React Hot Toast
 
@@ -68,31 +90,33 @@ A full-stack video sharing platform inspired by YouTube, built using the MERN st
 
 ## ✨ Backend Highlights
 
-- 50+ RESTful API Endpoints
-- JWT Access & Refresh Token Authentication
-- Secure Cookie-based Session Management
-- File Upload Pipeline using Multer & Cloudinary
-- Advanced MongoDB Aggregation Pipelines
-- Modular MVC Architecture
-- Centralized Error Handling
-- Custom API Response & Error Utilities
-- Optimized Database Queries
+- RESTful API architecture
+- JWT Access + Refresh Token authentication
+- HTTP-only cookie-based session management
+- Automatic token refresh
+- File upload pipeline using Multer and Cloudinary
+- MongoDB aggregation pipelines
+- Modular MVC architecture
+- Centralized error handling
+- Custom API Response and Error utilities
+- Owner-based authorization
+- Pagination and filtering
+- Search using MongoDB queries
 
 ---
 
 ## 📊 MongoDB Aggregations
 
-Used aggregation pipelines for:
+MongoDB aggregation pipelines are used for features such as:
 
-- Creator Dashboard Statistics
-- Channel Profiles
-- Subscriber Counts
-- Watch History
-- User Playlists
-- Recommended Videos
-- Personalized Video Feeds
+- Creator dashboard statistics
+- Channel profiles
+- Subscriber information
+- Watch history
+- User playlists
+- Video-related data aggregation
 
-Using operators such as:
+Common aggregation operators include:
 
 - `$lookup`
 - `$group`
@@ -106,20 +130,24 @@ Using operators such as:
 
 ## ⚡ Frontend Highlights
 
-- Protected Routes
-- Lazy Loaded Pages
-- React Query Data Fetching & Caching
-- Optimistic UI Updates
-- Responsive Design
-- Reusable UI Components
-- Axios Interceptors with Automatic Token Refresh
-- Skeleton Loaders & Toast Notifications
+- Protected routes
+- Public landing page
+- Responsive UI
+- Reusable components
+- Axios request/response interceptors
+- Automatic access-token refresh
+- Optimistic UI updates
+- Loading and error states
+- Toast notifications
+- Search with URL query parameters
+- Paginated video feed
+- Video upload with multipart FormData
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 VideoSocial/
 │
 ├── backend/
@@ -134,86 +162,8 @@ VideoSocial/
 │   ├── src/
 │   ├── components/
 │   ├── pages/
-│   ├── hooks/
+│   ├── contexts/
 │   ├── api/
 │   └── ...
-```
-
----
-
-## ⚙️ Installation
-
-### Clone Repository
-
-```bash
-git clone <repository-url>
-cd VideoSocial
-```
-
-### Backend
-
-```bash
-cd backend
-npm install
-npm run dev
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-## 🌐 Environment Variables
-
-### Backend
-
-```
-PORT=
-MONGODB_URI=
-
-ACCESS_TOKEN_SECRET=
-ACCESS_TOKEN_EXPIRY=
-
-REFRESH_TOKEN_SECRET=
-REFRESH_TOKEN_EXPIRY=
-
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-
-CORS_ORIGIN=
-```
-
-### Frontend
-
-```
-VITE_API_BASE_URL=
-```
-
----
-
-## 📸 Screenshots
-
-_Add application screenshots here._
-
----
-
-## 📌 Future Improvements
-
-- Video Recommendations
-- Notifications
-- Infinite Scrolling
-- Video Categories
-- Live Streaming
-- Real-time Chat
-
----
-
-## 👨‍💻 Author
-
-**Avishkar Mali**
+│
+└── README.md

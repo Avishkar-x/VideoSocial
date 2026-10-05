@@ -138,7 +138,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const accessTokenOptions = {
         httpOnly: true,
         secure: true,
-        maxAge: 1 * 24 * 60 * 60 * 1000        // 1 day in ms
+        maxAge: 1 * 24 * 60 * 60 * 1000      // 1 day in ms
     }
 
     const refreshTokenOptions = {

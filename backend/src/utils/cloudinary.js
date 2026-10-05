@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs"
+import path from "path"
 
 
 cloudinary.config({ 
@@ -10,22 +11,25 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localFilePath) => {
     try {
-        // console.log("Uploading:", localFilePath);
         if (!localFilePath) return null
-        //upload the file on cloudinary
-        const response = await cloudinary.uploader.upload(localFilePath, {
+        // Resolve to absolute path so it works regardless of CWD
+        const absolutePath = path.resolve(localFilePath)
+        console.log("Uploading file:", absolutePath, "exists:", fs.existsSync(absolutePath))
+        const response = await cloudinary.uploader.upload(absolutePath, {
             resource_type: "auto"
         })
-        // file has been uploaded successfull
-        //console.log("file is uploaded on cloudinary ", response.url);
-        // console.log(localFilePath);
-        // console.log(fs.existsSync(localFilePath));
-        fs.unlinkSync(localFilePath)
+        fs.unlinkSync(absolutePath)
         return response;
 
     } catch (error) {
         console.log("cloudinary error: " ,error);
-        fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation got failed
+        // Guard: only unlink if the file actually exists, to avoid a second error
+        try {
+            const absolutePath = path.resolve(localFilePath)
+            if (fs.existsSync(absolutePath)) {
+                fs.unlinkSync(absolutePath)
+            }
+        } catch (_) {}
         return null;
     }
 }

@@ -1,61 +1,43 @@
-import axiosInstance from './axiosInstance'
+import axiosInstance from "./axiosInstance"
 
-/**
- * Create a new playlist.
- * @param {{ name: string, description: string }} data
- */
-export function createPlaylist(data) {
-  return axiosInstance.post('/playlist', data)
+// POST /api/v1/playlist/  body: { name, description }
+export const createPlaylist = async (name, description) => {
+    const response = await axiosInstance.post("/playlist/", { name, description })
+    return response.data
 }
 
-/**
- * Get all playlists for a user.
- * Returns: [{ _id, name, description, totalVideos, thumbnail, createdAt }]
- * @param {string} userId
- */
-export function getUserPlaylists(userId) {
-  return axiosInstance.get(`/playlist/user/${userId}`)
+// GET /api/v1/playlist/:playlistId
+export const getPlaylistById = async (playlistId) => {
+    const response = await axiosInstance.get(`/playlist/${playlistId}`)
+    return response.data
 }
 
-/**
- * Get a single playlist with full populated video list.
- * @param {string} playlistId
- */
-export function getPlaylistById(playlistId) {
-  return axiosInstance.get(`/playlist/${playlistId}`)
+// GET /api/v1/playlist/user/:userId
+export const getUserPlaylists = async (userId) => {
+    const response = await axiosInstance.get(`/playlist/user/${userId}`)
+    return response.data
 }
 
-/**
- * Update a playlist's name and description.
- * @param {string} playlistId
- * @param {{ name: string, description: string }} data
- */
-export function updatePlaylist(playlistId, data) {
-  return axiosInstance.patch(`/playlist/${playlistId}`, data)
+// PATCH /api/v1/playlist/add/:videoId/:playlistId
+export const addVideoToPlaylist = async (videoId, playlistId) => {
+    const response = await axiosInstance.patch(`/playlist/add/${videoId}/${playlistId}`)
+    return response.data
 }
 
-/**
- * Delete a playlist.
- * @param {string} playlistId
- */
-export function deletePlaylist(playlistId) {
-  return axiosInstance.delete(`/playlist/${playlistId}`)
+// PATCH /api/v1/playlist/remove/:videoId/:playlistId
+export const removeVideoFromPlaylist = async (videoId, playlistId) => {
+    const response = await axiosInstance.patch(`/playlist/remove/${videoId}/${playlistId}`)
+    return response.data
 }
 
-/**
- * Add a video to a playlist.
- * @param {string} videoId
- * @param {string} playlistId
- */
-export function addVideoToPlaylist(videoId, playlistId) {
-  return axiosInstance.patch(`/playlist/add/${videoId}/${playlistId}`)
+// PATCH /api/v1/playlist/:playlistId  body: { name, description }
+export const updatePlaylist = async (playlistId, name, description) => {
+    const response = await axiosInstance.patch(`/playlist/${playlistId}`, { name, description })
+    return response.data
 }
 
-/**
- * Remove a video from a playlist.
- * @param {string} videoId
- * @param {string} playlistId
- */
-export function removeVideoFromPlaylist(videoId, playlistId) {
-  return axiosInstance.patch(`/playlist/remove/${videoId}/${playlistId}`)
+// DELETE /api/v1/playlist/:playlistId
+export const deletePlaylist = async (playlistId) => {
+    const response = await axiosInstance.delete(`/playlist/${playlistId}`)
+    return response.data
 }

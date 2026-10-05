@@ -1,36 +1,19 @@
-import axiosInstance from './axiosInstance'
+import axiosInstance from "./axiosInstance"
 
-/**
- * Toggle like on a video.
- * Returns { liked: boolean }
- * @param {string} videoId
- */
-export function toggleVideoLike(videoId) {
-  return axiosInstance.post(`/likes/toggle/v/${videoId}`)
+// POST /api/v1/likes/toggle/v/:videoId  → { data: { liked: boolean } }
+export const toggleVideoLike = async (videoId) => {
+    const response = await axiosInstance.post(`/likes/toggle/v/${videoId}`)
+    return response.data
 }
 
-/**
- * Toggle like on a comment.
- * Returns { liked: boolean }
- * @param {string} commentId
- */
-export function toggleCommentLike(commentId) {
-  return axiosInstance.post(`/likes/toggle/c/${commentId}`)
+// POST /api/v1/likes/toggle/c/:commentId  → { data: { liked: boolean } }
+export const toggleCommentLike = async (commentId) => {
+    const response = await axiosInstance.post(`/likes/toggle/c/${commentId}`)
+    return response.data
 }
 
-/**
- * Toggle like on a tweet.
- * Returns { liked: boolean }
- * @param {string} tweetId
- */
-export function toggleTweetLike(tweetId) {
-  return axiosInstance.post(`/likes/toggle/t/${tweetId}`)
-}
-
-/**
- * Get all videos liked by the current user.
- * Returns an array of like documents with populated video.
- */
-export function getLikedVideos() {
-  return axiosInstance.get('/likes/videos')
+// GET /api/v1/likes/videos  → { data: [ { _id, video: { ... owner: {...} }, createdAt } ] }
+export const getLikedVideos = async () => {
+    const response = await axiosInstance.get("/likes/videos")
+    return response.data
 }
